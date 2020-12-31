@@ -116,42 +116,10 @@ endfunction
 
 " Set variables for TmuxTarget().
 function! s:TmuxVars()
-    let names = split(s:TmuxSessions(), "\n")
     let b:vimtux = {}
-    if len(names) == 1
-        let b:vimtux['session'] = names[0]
-    else
-        let b:vimtux['session'] = ''
-    endif
-    while empty(b:vimtux['session'])
-        call inputsave()
-        let b:vimtux['session'] = input("session name: ", "", "custom,TmuxSessionNames")
-        call inputrestore()
-    endwhile
-
-    let windows = split(s:TmuxWindows(), "\n")
-    if len(windows) == 1
-        let window = windows[0]
-    else
-        call inputsave()
-        let window = input("window name: ", "", "custom,TmuxWindowNames")
-        call inputrestore()
-        if empty(window)
-            let window = windows[0]
-        endif
-    endif
-
-    let b:vimtux['window'] =  substitute(window, ":.*$" , '', 'g')
-
-    let panes = split(s:TmuxPanes(), "\n")
-    if len(panes) == 1
-        let b:vimtux['pane'] = panes[0]
-    else
-        let b:vimtux['pane'] = input("pane number: ", "", "custom,TmuxPaneNumbers")
-        if empty(b:vimtux['pane'])
-            let b:vimtux['pane'] = panes[0]
-        endif
-    endif
+    let b:vimtux['session'] = system("tmux display-message -p '#S'")[0]
+    let b:vimtux['window'] = system("tmux display-message -p '#W'")[0]
+    let b:vimtux['pane'] = '1'
 endfunction
 
 
